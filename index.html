@@ -2,83 +2,125 @@
 <!--Hi there! Interesting to see someone looking into the code, if you have found this there is a surprise! I've made a little bit of a challenge for you guys... I'd look into the images a little bit if I were you. Good luck!-->
 	<head>
 		<title>Project D | Home</title>
-		<link href="ProjectD.css" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
+		
 	</head>
 	<body>
-		<center>
-			<a class="logo" href="index.html"> <img src="assets/projectd.png" alt="Go to Homepage" title="Go to Homepage"> </a></center>
-			<img class="map" src="assets/kanto.png" type="button" onclick="clue1()"></img>
-				<p id="demo"></p>
-			<img class="trail" src="assets/trails.png"></img>
-				
+
+		
+		<div class="logo">
+			<a href="index.html">
+				<img src="assets/projectd.png" alt="Go to Homepage" title="Go to Homepage">
+			</a>
+			
+		</div>	
+		
 		<div id="wrapper">
+			<div id="leftcolumn">
+				<div class="nav">
+				<a class="active" href="#index">
+					ホームページ<small> (You are here)</small></a><br><br>
+				    <a href="index.html">対戦結果<small> Battle Results</small></a><br><br>
+				    <a href="index.html">相手チーム<small> Opponent Team</small></a><br><br>
+					<a href="index.html">エリア<small> Area</small></a><br><br>
+					<a href="index.html">勝敗<small> (Win/Loss</small></a><br><br>
+				    <br><br><a href="https://discord.gg/gvWkrgSSqJ" target="_blank">Discord<small> (Join now!)</small></a>
+			</div> <br><br><br><h3>Leave a Comment</h3>
+
+
 			
-				
-				<h2> Homepage </h2>
+			<textarea id="commentInput" rows="3" placeholder="Type your comment..."></textarea><br>
+			<button onclick="addComment()">Submit</button>
 			
-			<div class="sidebar" id="sidebar">
-				<div id="choice">
-					<a href="Momiji_line.html"> <p>Momiji Line</p> </a>
-				</div>
-				<script>
-			function clue1() {
-				document.getElementById("demo").innerHTML = "If you're reading this, congratulations! Did you know the second driver of the Seven Star Leaf team is very interesting?";
-			}
-		</script>
-				<div id="choice">
-					<a href="Enna_Skyline.html"> <p>Enna Skyline</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="Northern_Saitama.html"> <p>Northern Saitama</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="MazePass.html"> <p>Maze Pass</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="Tsuchisaka.html"> <p>Tsuchisaka</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="MountTsukuba.html"> <p>Mount Tsukuba</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="Yabitsu.html"> <p>Yabitsu</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="Nagao.html"> <p>Nagao</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="Nanamagari.html"> <p>Nanamagari</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="TsubakiLine.html"> <p>Tsubaki Line</p> </a>
-				</div>
-				<div id="choice2">
-					<a href="messageBoard.html"><p>Messages</p></a>
-				</div>
-			</div>
-			<footer>
-				<div id="myProgress">
-					<div id="myBar"></div>
-				</div>
-			</footer>
-<script>
-var i = 0;
-  if (i == 0) {
-    i = 1;
-    var elem = document.getElementById("myBar");
-    var width = 1;
-    var id = setInterval(frame, 50);
-    function frame() {
-      if (width >= 100) {
-        clearInterval(id);
-        i = 0;
-      } else {
-        width++;
-        elem.style.width = width + "%";
-      }
-    }
-  }
-</script>
+			<h3 style="margin-top:20px;">Comments:</h3>
+			<div id="comments"></div>
+			
+			<script>
+			  const BIN_URL = "https://api.npoint.io/e9550cd6bf1c5d78070a";
+			
+			  async function loadComments() {
+				try {
+				  const res = await fetch(BIN_URL);
+				  const data = await res.json();
+				  if (Array.isArray(data)) {
+					data.forEach(c => renderComment(c.text, c.date));
+				  }
+				} catch (err) {
+				  console.error("Failed to load comments", err);
+				}
+			  }
+			
+			  async function addComment() {
+				const text = document.getElementById('commentInput').value.trim();
+				if (!text) return;
+			
+				const now = new Date();
+				const date = now.toLocaleString(); // Local date/time
+				renderComment(text, date);
+				document.getElementById('commentInput').value = '';
+			
+				try {
+				  const res = await fetch(BIN_URL);
+				  let comments = await res.json();
+				  if (!Array.isArray(comments)) comments = [];
+				  comments.push({ text, date });
+			
+				  await fetch(BIN_URL, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(comments)
+				  });
+				} catch (err) {
+				  console.error("Failed to save comment", err);
+				}
+			  }
+			
+			  function renderComment(text, date) {
+				const div = document.createElement('div');
+				div.className = 'comment';
+				div.innerHTML = `
+				  <div style="border-bottom:1px solid #ddd; padding:6px 0;">
+					<p style="margin:0;">${text}</p>
+					<small style="color:#777;">Posted on ${date}</small>
+				  </div>
+				`;
+				document.getElementById('comments').appendChild(div);
+			  }
+			
+			  loadComments();
+			</script>
+		
+		
+			<div id="content">
+				<br><br><br><br><br><p>
+					
+					
+					This is a recreation of the Project D website in the Initial D show. <br> Join the discord!<br>(This website is still under construction)</p>
+		   </div>
 		</div>
+
+	<!--	<div id="backdrop">
+			<div class="map">
+			<img src="assets/kanto.png" type="button" onclick="clue1" alt="Map Image">
+			
+		</div>
+		<div class="trail">
+			<img src="assets/trails.png" alt="Trail Image">
+		</div>
+		</div> -->
+		<div class="backdrop">
+			<img src="assets/backgroundfix.png" alt="Map Image">
+		</div>
+			<footer>
+				
+			
+		
+		</footer>
+
+		<script src="superscript.js"></script>
+		<div class="container">
+		</div>	
+		
+		
 	</body>
 </html>
